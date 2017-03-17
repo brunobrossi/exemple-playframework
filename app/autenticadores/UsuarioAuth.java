@@ -8,9 +8,10 @@ import controllers.LoginController;
 import controllers.routes;
 import dao.ILoginDAO;
 import models.Usuario;
-import play.mvc.Result;
 import play.mvc.Http.Context;
+import play.mvc.Result;
 import play.mvc.Security.Authenticator;
+
 
 public class UsuarioAuth extends Authenticator {
 
@@ -20,10 +21,11 @@ public class UsuarioAuth extends Authenticator {
     @Override
     public String getUsername(Context context) {
 
-	String email = context.session().get(LoginController.AUTH);
-	Optional<Usuario> userSessao = loginDAO.doValidacaoSessao(email);
+	String codigo = context.session().get(LoginController.AUTH);
+	
+	Optional<Usuario> userSessao = loginDAO.doValidacaoSessao(codigo);
 	if (userSessao.isPresent()) {
-	    userSessao.get().getNome();
+	    return userSessao.get().getNome();
 	}
 	return null;
     }

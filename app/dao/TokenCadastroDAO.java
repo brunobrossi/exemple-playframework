@@ -8,7 +8,7 @@ import javax.persistence.TypedQuery;
 import models.TokenCadastro;
 import play.db.jpa.JPAApi;
 
-public class TokenDAO implements ITokenDAO {
+public class TokenCadastroDAO implements ITokenCadastroDAO {
 
     @Inject
     private JPAApi jpa;

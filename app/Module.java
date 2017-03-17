@@ -4,11 +4,13 @@ import com.google.inject.AbstractModule;
 
 import dao.ILoginDAO;
 import dao.IProdutoDAO;
-import dao.ITokenDAO;
+import dao.ITokenApiDAO;
+import dao.ITokenCadastroDAO;
 import dao.IUsuarioDAO;
 import dao.LoginDAO;
 import dao.ProdutoDAO;
-import dao.TokenDAO;
+import dao.TokenApiDAO;
+import dao.TokenCadastroDAO;
 import dao.UsuarioDAO;
 import services.ApplicationTimer;
 import services.AtomicCounter;
@@ -36,8 +38,9 @@ public class Module extends AbstractModule {
 
 	bind(IProdutoDAO.class).to(ProdutoDAO.class);
 	bind(IUsuarioDAO.class).to(UsuarioDAO.class);
-	bind(ITokenDAO.class).to(TokenDAO.class);
+	bind(ITokenCadastroDAO.class).to(TokenCadastroDAO.class);
 	bind(ILoginDAO.class).to(LoginDAO.class);
+	bind(ITokenApiDAO.class).to(TokenApiDAO.class);
     }
 
 }

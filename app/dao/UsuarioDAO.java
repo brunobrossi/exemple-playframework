@@ -40,4 +40,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 	jpa.em().merge(usuarioRecebido);
     }
 
+    
+
 }

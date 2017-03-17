@@ -16,7 +16,6 @@ import play.mvc.Result;
 import play.mvc.Security.Authenticated;
 import views.html.formularioLogin;
 
-@Transactional
 public class LoginController extends Controller {
 
     public static final String AUTH = "auth";
@@ -31,6 +30,7 @@ public class LoginController extends Controller {
 	return ok(formularioLogin.render(formularios.form()));
     }
 
+    @Transactional
     public Result fazLogin() {
 
 	DynamicForm form = formularios.form().bindFromRequest();
@@ -40,7 +40,7 @@ public class LoginController extends Controller {
 	if (userCandidato.isPresent()) {
 	    Usuario user = userCandidato.get();
 	    if (user.isHabilitado()) {
-		session(AUTH, user.getEmail());
+		insertUserSession(user);
 		flash("success", "Login efetuado com sucesso!");
 		return redirect(routes.UsuarioController.painel());
 	    } else {
@@ -53,11 +53,16 @@ public class LoginController extends Controller {
 	return redirect(routes.LoginController.formularioLogin());
     }
 
+    @Transactional
     @Authenticated(UsuarioAuth.class)
     public Result fazLogout() {
 	session().clear();
 	flash("success", "Logout efetuado!");
 	return redirect(routes.LoginController.formularioLogin());
+    }
+
+    public static void insertUserSession(Usuario user) {
+	session(AUTH, user.getTokenApi().getCode());
     }
 
 }

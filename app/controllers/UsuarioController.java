@@ -6,9 +6,11 @@ import javax.inject.Inject;
 
 import akka.util.Crypt;
 import autenticadores.UsuarioAuth;
-import dao.ITokenDAO;
+import dao.ITokenApiDAO;
+import dao.ITokenCadastroDAO;
 import dao.IUsuarioDAO;
 import models.EmailCadastroModelo;
+import models.TokenApiProd;
 import models.TokenCadastro;
 import models.Usuario;
 import play.api.libs.mailer.MailerClient;
@@ -19,9 +21,9 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security.Authenticated;
 import validadores.ValidadorUsuario;
-import views.html.*;
+import views.html.formularioNovoUsuario;
+import views.html.painel;
 
-@Transactional
 public class UsuarioController extends Controller {
 
     @Inject
@@ -34,11 +36,15 @@ public class UsuarioController extends Controller {
     private ValidadorUsuario validadorusuario;
 
     @Inject
-    private ITokenDAO tokenDAO;
+    private ITokenCadastroDAO tokenCadastroDAO;
 
     @Inject
     private MailerClient mailSender;
 
+    @Inject
+    private ITokenApiDAO tokenApiDAO;
+
+    @Transactional
     public Result salvaNovoUsuario() {
 	Form<Usuario> fromRequest = formularios.form(Usuario.class).bindFromRequest();
 	if (validadorusuario.temErros(fromRequest)) {
@@ -49,7 +55,7 @@ public class UsuarioController extends Controller {
 	usuario.setSenha(Crypt.sha1(usuario.getSenha()));
 	usuarioDAO.save(usuario);
 	TokenCadastro tokenCadastro = new TokenCadastro(usuario);
-	tokenDAO.save(tokenCadastro);
+	tokenCadastroDAO.save(tokenCadastro);
 	mailSender.send(new EmailCadastroModelo(tokenCadastro));
 	flash("success", "Um email foi enviado para que você confirme seu cadastro!");
 	return redirect(routes.LoginController.formularioLogin());
@@ -61,20 +67,23 @@ public class UsuarioController extends Controller {
 	return ok(formularioNovoUsuario.render(form));
     }
 
+    @Transactional
     public Result confirmaUsuario(String email, String token) {
 
-	Optional<TokenCadastro> possivelToken = tokenDAO.findByToken(token);
+	Optional<TokenCadastro> possivelToken = tokenCadastroDAO.findByToken(token);
 	Optional<Usuario> possivelUsuario = usuarioDAO.findByEmail(email);
 
 	if (possivelToken.isPresent() && possivelUsuario.isPresent()) {
-
 	    TokenCadastro tokenRecebido = possivelToken.get();
 	    Usuario usuarioRecebido = possivelUsuario.get();
 	    if (tokenRecebido.getUsuario().equals(usuarioRecebido)) {
-		tokenDAO.delete(tokenRecebido);
+		tokenCadastroDAO.delete(tokenRecebido);
+		TokenApiProd tokenProdApi = new TokenApiProd(usuarioRecebido);
+		tokenApiDAO.save(tokenProdApi);
+		usuarioRecebido.setTokenApi(tokenProdApi);
 		usuarioRecebido.setHabilitado(true);
 		usuarioDAO.update(usuarioRecebido);
-		session(LoginController.AUTH, usuarioRecebido.getEmail());
+		LoginController.insertUserSession(usuarioRecebido);
 		flash("success", "Seu usuário foi confirmado com sucesso! Bem-vindo!");
 		return redirect(routes.UsuarioController.painel());
 	    }
@@ -83,10 +92,11 @@ public class UsuarioController extends Controller {
 	return redirect(routes.LoginController.formularioLogin());
     }
 
+    @Transactional
     @Authenticated(UsuarioAuth.class)
     public Result painel() {
+	
 	return ok(painel.render());
     }
-    
 
 }

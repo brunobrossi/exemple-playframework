@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import models.TokenCadastro;
 
-public interface ITokenDAO {
+public interface ITokenCadastroDAO {
 
     public void save(TokenCadastro token);
     

@@ -23,12 +23,12 @@ public class LoginDAO implements ILoginDAO {
     }
 
     @Override
-    public Optional<Usuario> doValidacaoSessao(String email) {
+    public Optional<Usuario> doValidacaoSessao(String code) {
 
-	TypedQuery<Usuario> query = jpa.em().createNamedQuery("findByEmailValida", Usuario.class).setParameter("email",
-		email);
+	TypedQuery<Usuario> query = jpa.em().createNamedQuery("findByApiToken", Usuario.class).setParameter("tokenCode",
+		code);
 	return query.getResultList().stream().findAny();
-	
+
     }
 
 }

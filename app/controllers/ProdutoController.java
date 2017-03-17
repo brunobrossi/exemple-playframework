@@ -12,7 +12,6 @@ import play.mvc.Result;
 import validadores.ValidadorProduto;
 import views.html.formularioNovoProduto;
 
-@Transactional
 public class ProdutoController extends Controller {
 
     @Inject
@@ -24,6 +23,7 @@ public class ProdutoController extends Controller {
     @Inject
     ValidadorProduto validador;
 
+    @Transactional
     public Result salvaNovoProduto() {
 
 	Form<Produto> formProduto = formularios.form(Produto.class).bindFromRequest();
