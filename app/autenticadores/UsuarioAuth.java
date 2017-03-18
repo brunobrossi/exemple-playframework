@@ -12,7 +12,6 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security.Authenticator;
 
-
 public class UsuarioAuth extends Authenticator {
 
     @Inject
@@ -22,9 +21,11 @@ public class UsuarioAuth extends Authenticator {
     public String getUsername(Context context) {
 
 	String codigo = context.session().get(LoginController.AUTH);
-	
+
 	Optional<Usuario> userSessao = loginDAO.doValidacaoSessao(codigo);
 	if (userSessao.isPresent()) {
+	    Usuario usuario = userSessao.get();
+	    context.args.put("usuario", usuario);
 	    return userSessao.get().getNome();
 	}
 	return null;

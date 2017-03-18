@@ -2,6 +2,7 @@ package controllers;
 
 import javax.inject.Inject;
 
+import autenticadores.AdminAuth;
 import dao.IProdutoDAO;
 import models.Produto;
 import play.data.Form;
@@ -9,9 +10,11 @@ import play.data.FormFactory;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security.Authenticated;
 import validadores.ValidadorProduto;
 import views.html.formularioNovoProduto;
 
+@Authenticated(AdminAuth.class)
 public class ProdutoController extends Controller {
 
     @Inject

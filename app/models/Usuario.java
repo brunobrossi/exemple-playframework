@@ -4,6 +4,8 @@ package models;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -42,7 +44,8 @@ public class Usuario {
     private TokenApiProd tokenApi;
     @OneToMany(mappedBy = "user")
     private List<AccessRegister> access;
-    
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.CLIENT;
 
     public Long getId() {
 	return id;
@@ -98,6 +101,14 @@ public class Usuario {
 
     public void setAcess(List<AccessRegister> acess) {
 	this.access = acess;
+    }
+
+    public boolean isAdmin() {
+	return role == Role.ADMIN;
+    }
+
+    public void setAdmin(Role isAdmin) {
+	this.role = isAdmin;
     }
 
 }
