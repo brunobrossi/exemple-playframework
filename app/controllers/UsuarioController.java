@@ -21,8 +21,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security.Authenticated;
 import validadores.ValidadorUsuario;
-import views.html.formularioNovoUsuario;
-import views.html.painel;
+import views.html.*;
 
 public class UsuarioController extends Controller {
 
@@ -95,8 +94,9 @@ public class UsuarioController extends Controller {
     @Transactional
     @Authenticated(UsuarioAuth.class)
     public Result painel() {
-	
-	return ok(painel.render());
+	String tokenAPI = session(LoginController.AUTH);
+	Usuario userView = usuarioDAO.findByTokenApi(tokenAPI).get();
+	return ok(painel.render(userView));
     }
 
 }

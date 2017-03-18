@@ -1,11 +1,14 @@
 
 package models;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import play.data.validation.Constraints.Email;
@@ -37,6 +40,9 @@ public class Usuario {
     private boolean habilitado = false;
     @OneToOne(mappedBy = "usuario")
     private TokenApiProd tokenApi;
+    @OneToMany(mappedBy = "user")
+    private List<AccessRegister> access;
+    
 
     public Long getId() {
 	return id;
@@ -84,6 +90,14 @@ public class Usuario {
 
     public void setTokenApi(TokenApiProd tokenApi) {
 	this.tokenApi = tokenApi;
+    }
+
+    public List<AccessRegister> getAccess() {
+	return access;
+    }
+
+    public void setAcess(List<AccessRegister> acess) {
+	this.access = acess;
     }
 
 }

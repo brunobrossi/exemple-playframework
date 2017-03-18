@@ -2,6 +2,8 @@ import java.time.Clock;
 
 import com.google.inject.AbstractModule;
 
+import dao.AccessRegisterDAO;
+import dao.IAccessRegisterDAO;
 import dao.ILoginDAO;
 import dao.IProdutoDAO;
 import dao.ITokenApiDAO;
@@ -41,6 +43,7 @@ public class Module extends AbstractModule {
 	bind(ITokenCadastroDAO.class).to(TokenCadastroDAO.class);
 	bind(ILoginDAO.class).to(LoginDAO.class);
 	bind(ITokenApiDAO.class).to(TokenApiDAO.class);
+	bind(IAccessRegisterDAO.class).to(AccessRegisterDAO.class);
     }
 
 }

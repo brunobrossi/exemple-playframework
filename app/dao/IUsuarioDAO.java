@@ -16,4 +16,6 @@ public interface IUsuarioDAO {
 
     public void update(Usuario usuarioRecebido);
     
+    public Optional<Usuario> findByTokenApi(String tokenApi);
+    
 }

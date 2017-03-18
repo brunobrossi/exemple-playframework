@@ -40,6 +40,13 @@ public class UsuarioDAO implements IUsuarioDAO {
 	jpa.em().merge(usuarioRecebido);
     }
 
-    
+    @Override
+    public Optional<Usuario> findByTokenApi(String tokenApi) {
+
+	TypedQuery<Usuario> query = jpa.em().createNamedQuery("findByApiToken", Usuario.class).setParameter("tokenCode",
+		tokenApi);
+	return query.getResultList().stream().findFirst();
+
+    }
 
 }
